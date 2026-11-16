@@ -96,10 +96,9 @@ if __name__ == "__main__":
     ip = sys.argv[1]
     puerto = int(sys.argv[2])
     rutas = sys.argv[3]
+    buff_size = 32
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
-    buff_size = 32
 
     try:
         sock.bind((ip, puerto))
@@ -108,8 +107,20 @@ if __name__ == "__main__":
 
     while True:
         try:
-            bts, _ = sock.recvfrom(buff_size)
-            print(parse_packet(bts).msg)
+            bts, ip_paquete = sock.recvfrom(buff_size)
+            data = parse_packet(bts)
+            # el paquete es para mi?
+            if data.ip == ip and data.puerto == puerto:
+                print(data.msg)
+            else:
+                next_addr = check_routes(rutas, (data.ip, data.puerto))
+                if next_addr:
+                    print(f"redirigiendo paquete {ip_paquete} con destino final {data.ip}:{data.puerto} " +
+                          f"desde {ip}:{puerto} hacia {next_addr[0]}:{next_addr[1]}")
+                    sock.sendto(bts, next_addr)
+                else:
+                    print(f"No hay rutas hacia {ip}:{puerto} para paquete {ip_paquete}")
+
             
         except KeyboardInterrupt:
             sys.exit()
