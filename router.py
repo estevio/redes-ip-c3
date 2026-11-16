@@ -72,6 +72,7 @@ def check_routes(routes_file_name: str, destination_address: tuple[str, int]):
 
     with open(routes_file_name) as tabla:
         row = tabla.readline()
+        ips_posibles = []
         while row:
 
             try:
@@ -82,10 +83,22 @@ def check_routes(routes_file_name: str, destination_address: tuple[str, int]):
                 return
 
             if (ip_destino == destination_address[0] and int(i) <= destination_address[1] <= int(j)):
-                return (ip_salto, int(puerto_salto))
+                ips_posibles.append((ip_salto, int(puerto_salto)))
+            
             row = tabla.readline()
 
-        return None
+        if not ips_posibles:
+            return None
+
+        # ips posibles que no estan dentro de cola ips
+        #no_visitadas = filter(lambda x: x not in cola_ips, ips_posibles)
+        no_visitadas = [x for x in ips_posibles if x not in cola_ips]
+        if no_visitadas:
+            return no_visitadas[0]
+        # ips posibles que estan en la cola de ips
+        visitadas = [x for x in cola_ips if x in ips_posibles]
+        if visitadas:
+            return visitadas.pop()
 
 
 if __name__ == "__main__":
@@ -97,6 +110,8 @@ if __name__ == "__main__":
     puerto = int(sys.argv[2])
     rutas = sys.argv[3]
     buff_size = 32
+    #global cola_ips
+    cola_ips = []
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
@@ -117,11 +132,13 @@ if __name__ == "__main__":
                 if next_addr:
                     print(f"redirigiendo paquete {ip_paquete} con destino final {data.ip}:{data.puerto} " +
                           f"desde {ip}:{puerto} hacia {next_addr[0]}:{next_addr[1]}")
+                    if next_addr in cola_ips:
+                        cola_ips.remove(next_addr)
+                    cola_ips.append(next_addr)
                     sock.sendto(bts, next_addr)
                 else:
                     print(f"No hay rutas hacia {ip}:{puerto} para paquete {ip_paquete}")
 
-            
         except KeyboardInterrupt:
             sys.exit()
     
