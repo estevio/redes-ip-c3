@@ -56,6 +56,37 @@ def create_packet(data: PaqueteIP):
 
     return res
 
+def check_routes(routes_file_name: str, destination_address: tuple[str, int]):
+    """
+    Busca la dirección de destino destination_address en la tabla de rutas almacenada
+    en el archivo txt routes_file_name
+
+    Args: 
+        routes_file_name (str): nombre del archivo de la tabla de rutas
+        destination_address (tuple[str, int]): par que representa la dirección de destino (IP, puerto)
+
+    Returns:
+        tuple[str, int]: tupla que representa la dirección del siguiente salto
+        None: si no se encuentra la dirección solicitada
+    """
+
+    with open(routes_file_name) as tabla:
+        row = tabla.readline()
+        while row:
+
+            try:
+                ip_destino, i, j, ip_salto, puerto_salto = row.split(" ")
+                ip_destino = ip_destino.split("/")[0]
+            except:
+                print("error al leer linea")
+                return
+
+            if (ip_destino == destination_address[0] and int(i) <= destination_address[1] <= int(j)):
+                return (ip_salto, int(puerto_salto))
+            row = tabla.readline()
+
+        return None
+
 
 if __name__ == "__main__":
 
