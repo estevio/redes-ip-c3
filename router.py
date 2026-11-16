@@ -66,17 +66,9 @@ if __name__ == "__main__":
     puerto = int(sys.argv[2])
     rutas = sys.argv[3]
 
-    print(f"direccion IP:\t{ip}\tpuerto:\t{puerto}\ttabla de rutas:\t{rutas}\t")
-
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
     buff_size = 32
-
-    data = PaqueteIP(ip, puerto, "hola!")
-    p = create_packet(data)
-    print(f"create_packet: {p}\tp[0]: {p[0]}\n")
-    parsed = parse_packet(p)
-    print(f"parse_packet:\t{parsed.ip}:{parsed.puerto}")
 
     try:
         sock.bind((ip, puerto))
@@ -85,7 +77,9 @@ if __name__ == "__main__":
 
     while True:
         try:
-            sock.recvfrom(buff_size)
+            bts, _ = sock.recvfrom(buff_size)
+            print(parse_packet(bts).msg)
+            
         except KeyboardInterrupt:
             sys.exit()
     
