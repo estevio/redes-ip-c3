@@ -12,7 +12,8 @@ try:
     ip_envio, puerto_envio = envio.split(" ")
     puerto_envio = int(puerto_envio)
 except:
-    print("Error al parsear dirección de destino/envio\nUtilice el formato [IP] [puerto]\n")
+    print("Error al parsear dirección de destino/envio\nUtilice el formato [IP] [puerto]")
+    print("Ejemplo: \"127.0.0.1 8882\"")
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
