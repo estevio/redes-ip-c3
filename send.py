@@ -1,10 +1,11 @@
 import socket
-from router import PaqueteIP, create_packet
+from routerTTL import PaqueteIP, create_packet
 
 
 destino = input("Direccion router de destino: ")
 msg = input("Mensaje: ")
 envio = input("Direccion router de envio: ")
+ttl = int(input("TTL: "))
 
 try:
     ip_destino, puerto_destino = destino.split(" ")
@@ -17,5 +18,5 @@ except:
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-pack = create_packet(PaqueteIP(ip_destino, puerto_destino, msg))
+pack = create_packet(PaqueteIP(ip_destino, puerto_destino, msg, ttl))
 sock.sendto(pack, (ip_envio, puerto_envio))

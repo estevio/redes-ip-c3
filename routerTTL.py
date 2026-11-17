@@ -132,6 +132,9 @@ if __name__ == "__main__":
         try:
             bts, ip_paquete = sock.recvfrom(buff_size)
             data = parse_packet(bts)
+            if data.ttl <= 0:
+                print("Se recibió un paquete con TTL menor o igual a 0")
+                continue
             # el paquete es para mi?
             if data.ip == ip and data.puerto == puerto:
                 print(data.msg)
@@ -145,7 +148,8 @@ if __name__ == "__main__":
                     if next_addr in cola_ips:
                         cola_ips.remove(next_addr)
                     cola_ips.append(next_addr)
-                    sock.sendto(bts, next_addr)
+                    data.ttl -= 1
+                    sock.sendto(create_packet(data), next_addr)
                 else:
                     print(f"No hay rutas hacia {ip}:{puerto} para paquete {ip_paquete}")
 
