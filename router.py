@@ -85,7 +85,7 @@ def check_routes(routes_file_name: str, destination_address: tuple[str, int]):
 
             if (ip_destino == destination_address[0] and int(i) <= destination_address[1] <= int(j)):
                 ips_posibles.append((ip_salto, int(puerto_salto)))
-                # print(f"puerto salto: {puerto_salto}\tpuerto destino: {destination_address[1]}\n")
+                #print(f"puerto salto: {puerto_salto}\tpuerto destino: {destination_address[1]}\n")
                 if ip_salto == destination_address[0] and puerto_salto == destination_address[1]:
                     return (ip_salto, puerto_salto)
             
