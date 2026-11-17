@@ -73,6 +73,7 @@ def check_routes(routes_file_name: str, destination_address: tuple[str, int]):
     with open(routes_file_name) as tabla:
         row = tabla.readline()
         ips_posibles = []
+
         while row:
 
             try:
