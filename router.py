@@ -147,5 +147,6 @@ if __name__ == "__main__":
                     print(f"No hay rutas hacia {ip}:{puerto} para paquete {ip_paquete}")
 
         except KeyboardInterrupt:
+            sock.close()
             sys.exit()
     

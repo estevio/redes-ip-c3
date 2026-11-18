@@ -20,3 +20,4 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 pack = create_packet(PaqueteIP(ip_destino, puerto_destino, msg, ttl))
 sock.sendto(pack, (ip_envio, puerto_envio))
+sock.close()

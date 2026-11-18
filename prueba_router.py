@@ -19,3 +19,5 @@ with open(archivo) as txt:
         pack = create_packet(PaqueteIP(headers[0], int(headers[1]), line, int(headers[2])))
         sock.sendto(pack, (ip_inicial, int(puerto_inicial)))
         line = txt.readline()
+
+sock.close()
